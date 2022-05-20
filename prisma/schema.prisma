@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model asset {
+  id      Int     @id @default(autoincrement())
+  type    Int?
+  level   Int?
+  address String? @db.VarChar(100)
+  user    user?   @relation(fields: [address], references: [address], onDelete: Restrict, onUpdate: Restrict, map: "asset_ibfk_1")
+
+  @@index([address], map: "address")
+}
+
+model catalog {
+  ID          Int     @id @default(autoincrement())
+  name        String? @db.VarChar(100)
+  description String? @db.VarChar(100)
+  url         String? @db.VarChar(100)
+  cost1       Int?
+  cost2       Int?
+  cost3       Int?
+  req1        Int?
+  req2        Int?
+  req3        Int?
+  category    Int?
+}
+
+model product {
+  address String @db.VarChar(100)
+  id      Int
+  user    user   @relation(fields: [address], references: [address], onUpdate: Restrict, map: "product_ibfk_1")
+
+  @@id([address, id])
+}
+
+model user {
+  address String    @id @db.VarChar(100)
+  cash1   Float?    @db.Float
+  cash2   Float?    @db.Float
+  cash3   Float?    @db.Float
+  asset   asset[]
+  product product[]
+}
